@@ -1,10 +1,9 @@
-const express  = require("express");
-const http     = require("http");
+const express = require("express");
+const http = require("http");
 const socketio = require("socket.io");
-const path     = require("path");
-const Sockets  = require("./sockets");
-const cors     = require("cors");
-
+const path = require("path");
+const Sockets = require("./sockets");
+const cors = require("cors");
 
 class Server {
   constructor() {
@@ -18,30 +17,31 @@ class Server {
     this.io = socketio(this.server, {
       /* configuraciones*/
     });
+
+    this.sockets = new Sockets(this.io);
   }
 
-  middlewares(){
-   this.app.use(express.static(path.resolve( __dirname ,"../public")) );
-  
+  middlewares() {
+    this.app.use(express.static(path.resolve(__dirname, "../public")));
+
+    this.app.get("/last", (req, res) => {
+      res.json({
+        ok: true,
+        last: this.sockets.newTicket.last13,
+      });
+    });
+
     // cors
     this.app.use(cors());
   }
-  
-  configurarSockets(){
-      new Sockets(this.io);
-
-  }
 
   execute() {
-   // inicializar middlewares
+    // inicializar middlewares
     this.middlewares();
-
-   // configurar sockets
-   this.configurarSockets();
 
     // inicializar servidor
     this.server.listen(this.port, () => {
-      console.log("server corriendo en el puerto :",this.port);
+      console.log("server corriendo en el puerto :", this.port);
     });
   }
 }
