@@ -13,11 +13,15 @@ class Sockets {
     this.io.on("connection", (socket) => {
       console.log("cliente conectado");
       // escuchar evento
-      socket.on("solicitar-ticket", (data, callBack)=>{
-          const ticket = this.newTicket.createTicket();
+      socket.on("solicitar-ticket", (data, callBack) => {
+        const ticket = this.newTicket.createTicket();
+        callBack(ticket);
+      });
+      socket.on("siguiente-ticket-trabajar", ({ agente, escritorio }, callBack) => {
+          const ticket = this.newTicket.assignTicket(agente, escritorio);
           callBack(ticket);
-      })
-      
+        }
+      );
     });
   }
 }
