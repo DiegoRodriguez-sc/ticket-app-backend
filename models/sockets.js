@@ -17,12 +17,14 @@ class Sockets {
         const ticket = this.newTicket.createTicket();
         callBack(ticket);
       });
+
       socket.on("siguiente-ticket-trabajar", ({ agente, escritorio }, callBack) => {
           const ticket = this.newTicket.assignTicket(agente, escritorio);
           callBack(ticket);
           this.io.emit("ticket-asignado", this.newTicket.last13);
         }
       );
+      
     });
   }
 }
